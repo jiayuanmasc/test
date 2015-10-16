@@ -1,9 +1,25 @@
-import qualified Data.List as L
+import Control.Applicative
+import Data.List
 
-amicable :: (Int, Int) -> Bool
-amicable (a, b) = sumOfFactor a == sumOfFactor b
-	where
-		sumOfFactor x = 1 + sum [ if f == quot x f then f else (f + quot x f) | f <- [2..floor (sqrt (fromIntegral x))], mod x f == 0 ]
+sumf :: Int -> Int
+sumf n = sum $ map (dfor n) (cand n)
+  where
+    cand n = takeWhile (\x -> x ^ 2 <= n) [1..]
+    dfor n x
+      | n `mod` x /= 0 = 0
+      | x == 1         = 1
+      | x * x == n     = x
+      | otherwise      = x + (n `div` x)
 
-solve :: Int -> (Int, Int)
-solve n = head $ L.dropWhile (not . amicable) [ (x,y) | x<-[n,(n-1)..1], y<-[(x-1),(x-2)..1] ]
+isAmicable :: (Int, Int) -> Bool
+isAmicable (a, b) = (sumf a == b) && (sumf b == a) 
+
+solve :: Int -> [(Int, Int)]
+solve n = filter isAmicable
+  where
+    cand = [ (x,y) | x<-[1..n], y<-[1..n], x > y ]
+
+main :: IO ()
+main = do
+  n <- read <$> getLine
+  putStrLn . show $ solve n

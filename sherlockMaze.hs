@@ -40,10 +40,10 @@ solve :: Int -> IO ()
 solve t
   | t == 0 = return ()
   | otherwise = do
-  	[n, m, k] <- map read . words <$> getLine
-	sol <- countPath n m k
-	putStrLn $ show sol
-	solve $! t-1
+    [n, m, k] <- map read . words <$> getLine
+    sol <- countPath n m k
+    putStrLn $ show sol
+    solve $! t-1
 
 main :: IO ()
 main = do
